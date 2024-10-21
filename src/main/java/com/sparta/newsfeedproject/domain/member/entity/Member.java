@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -26,18 +28,13 @@ public class Member extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRoleEnum role = UserRoleEnum.USER;//기본값을 일반사용자로
+    // 내가 팔로우 하는 유저 리스트
+    @OneToMany(mappedBy = "follower")
+    private List<Follow> followingList = new ArrayList<>();
 
-    // 친구
-    @ManyToMany
-    @JoinTable(
-            name="friends",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id")
-    )
-    private Set<Member> friendsList = new HashSet<Member>();
+    // 나를 팔로우 하는 유저 리스트
+    @OneToMany(mappedBy = "followed")
+    private List<Follow> followerList = new ArrayList<>();
 
     // 차단친구
     @ManyToMany

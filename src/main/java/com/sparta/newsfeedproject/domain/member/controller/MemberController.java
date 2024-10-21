@@ -10,7 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import com.sparta.newsfeedproject.domain.member.entity.Follow;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
+import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/members")
@@ -32,4 +41,18 @@ public class MemberController {
         return ResponseEntity.ok("로그인 성공");
     }
 
+    private MemberRepository memberRepository;
+    private FollowRepository followRepository;
+
+    @PostMapping("/api/follow")
+    public void followMember(@AuthenticationPrincipal MemberDetailsImpl memberDetails, @RequestBody Long followedId) {
+        Member follower = memberDetails.getMember();
+        Member followed = memberRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 id: " + followedId));
+        Optional<Follow> followCheck = followRepository.findByFollowerIdAndFollowedId(follower.getId(), followedId);
+        if(followCheck.isPresent()) throw new RuntimeException("이미 팔로우 중인 유저입니다.");
+
+        Follow follow = new Follow(follower, followed);
+        followRepository.save(follow);
+    }
 }

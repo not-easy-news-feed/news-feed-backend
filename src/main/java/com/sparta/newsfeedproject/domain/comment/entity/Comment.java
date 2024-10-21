@@ -10,7 +10,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Comment extends TimeStamped {
     @Id
@@ -19,6 +18,9 @@ public class Comment extends TimeStamped {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private String username;
 
     // 작성자와 댓글 = 다 대 일
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,5 +31,12 @@ public class Comment extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id",nullable = false)
     private Post post;
+
+    public Comment(String content, Member member, Post post) {
+        this.content = content;
+        this.member = member;
+        this.post = post;
+        this.username = member.getUsername();
+    }
 
 }

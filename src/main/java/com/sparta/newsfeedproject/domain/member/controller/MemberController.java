@@ -1,5 +1,8 @@
 package com.sparta.newsfeedproject.domain.member.controller;
 
+import com.sparta.newsfeedproject.domain.member.entity.Follow;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
 import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;

@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +23,4 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "followed_id")
     private Member followed;
-
-    public Follow(Member follower, Member followed) {
-        this.follower = follower;
-        this.followed = followed;
-    }
 }

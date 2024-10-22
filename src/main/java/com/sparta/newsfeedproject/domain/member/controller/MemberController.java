@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
+
     private final MemberService memberService;
+
 
     //회원가입
     @PostMapping("/signup")

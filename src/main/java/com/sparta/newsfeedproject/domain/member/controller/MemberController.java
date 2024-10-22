@@ -16,19 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
+
     private final MemberService memberService;
+
 
     //회원가입
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto){
+    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
         memberService.signup(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
     }
 
     //로그인
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
-        memberService.login(requestDto,response);
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
+        memberService.login(requestDto, response);
         return ResponseEntity.ok("로그인 성공");
     }
 

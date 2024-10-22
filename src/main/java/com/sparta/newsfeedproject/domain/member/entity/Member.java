@@ -38,7 +38,7 @@ public class Member extends TimeStamped {
 
     // 차단 리스트
     @OneToMany(mappedBy = "blockerMember")
-    private List<Member> blockedList = new ArrayList<>();
+    private List<Block> blockedList = new ArrayList<>();
 
     public Member(String name, String email, String password, UserRoleEnum role) {
         this.name = name;

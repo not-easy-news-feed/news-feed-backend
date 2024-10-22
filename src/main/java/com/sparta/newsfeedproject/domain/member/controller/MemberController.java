@@ -9,10 +9,13 @@ import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import com.sparta.newsfeedproject.domain.member.dto.BlockRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.BlockResponseDto;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,7 +50,9 @@ public class MemberController {
         FollowResponseDto responseDto = memberService.createFollow(member, requestDto.getFollowedMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     @PostMapping("/block")
-    public BlockResponseDto createBlock(@RequestBody BlockRequestDto requestDto) {
-        return memberService.createBlock(requestDto.getMemberId(), requestDto.getBlockedMemberId());
+    public ResponseEntity<BlockResponseDto> createBlock(HttpServletRequest request, @RequestBody BlockRequestDto requestDto) {
+        Member member = (Member) request.getAttribute("member");
+        BlockResponseDto responseDto = memberService.createBlock(member, requestDto.getBlockedMemberId());
+        return ResponseEntity.ok(responseDto);
     }
 }

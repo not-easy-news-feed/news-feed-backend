@@ -55,6 +55,7 @@ public class MemberService {
         String password = requestDto.getPassword();
     private final BlockRepository blockRepository;
 
+    public BlockResponseDto createBlock(Member blockerMember, Long blockedMemberId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()-> new IllegalArgumentException("등록된 사용자가 없습니다."));
 
@@ -83,7 +84,7 @@ public class MemberService {
         Member blockedMember = memberRepository.findById(blockedId)
         Member blockedMember = memberRepository.findById(blockedMemberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        Optional<Block> blockCheck = blockRepository.findByBlockerMemberIdAndBlockedMemberId(memberId, blockedMemberId);
+        Optional<Block> blockCheck = blockRepository.findByBlockerMemberIdAndBlockedMemberId(blockerMember.getId(), blockedMemberId);
         if (blockCheck.isPresent()) throw new RuntimeException("이미 차단 중인 유저입니다.");
 
         Follow follow = new Follow(follower, followed);

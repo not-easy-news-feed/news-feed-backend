@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class BlockRequestDto {
-    private Long memberId;
     private Long blockedMemberId;
 }

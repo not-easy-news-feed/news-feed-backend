@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
     // 회원탈퇴
     public void deleteMember(Long memberId) {
         // 사용자 존재 여부 확인

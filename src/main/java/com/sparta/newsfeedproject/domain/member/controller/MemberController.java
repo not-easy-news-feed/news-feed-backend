@@ -12,7 +12,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-
     //회원탈퇴
     @DeleteMapping("/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable Long memberId) {

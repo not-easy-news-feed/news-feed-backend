@@ -8,9 +8,6 @@ import org.aspectj.weaver.ast.Not;
 
 @Getter
 public class PostRequestDto {
-    @NotNull
-    private Long memberId;
-
     @NotBlank
     @Size(min = 1, max = 20)
     private String title;

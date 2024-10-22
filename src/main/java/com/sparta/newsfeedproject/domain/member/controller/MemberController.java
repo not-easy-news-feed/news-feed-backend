@@ -1,5 +1,8 @@
 package com.sparta.newsfeedproject.domain.member.controller;
 
+import com.sparta.newsfeedproject.domain.member.dto.FollowRequestDto;
+import com.sparta.newsfeedproject.domain.member.dto.FollowResponseDto;
+import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import com.sparta.newsfeedproject.domain.member.entity.Follow;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
@@ -23,13 +26,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
+    private final MemberService memberService;
     private final MemberService memberService;
 
     //회원가입
@@ -50,15 +51,7 @@ public class MemberController {
     private FollowRepository followRepository;
 
     @PostMapping("/follow")
-    public void followMember(@RequestBody Long memberId, @RequestBody Long followedId) {
-        Member follower = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 id: " + memberId));
-        Member followed = memberRepository.findById(followedId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 id: " + followedId));
-        Optional<Follow> followCheck = followRepository.findByFollowerIdAndFollowedId(follower.getId(), followedId);
-        if(followCheck.isPresent()) throw new RuntimeException("이미 팔로우 중인 유저입니다.");
-
-        Follow follow = new Follow(follower, followed);
-        followRepository.save(follow);
+    public FollowResponseDto createFollow(@RequestBody FollowRequestDto requestDto) {
+        return memberService.createFollow(requestDto.getMemberId(), requestDto.getFollowedMemberId());
     }
 }

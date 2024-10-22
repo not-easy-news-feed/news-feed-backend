@@ -17,15 +17,15 @@ public class Follow {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "follower_id")
-    private Member follower;
+    @JoinColumn(name = "follower_member_id")
+    private Member followerMember;
 
     @ManyToOne
-    @JoinColumn(name = "followed_id")
-    private Member followed;
+    @JoinColumn(name = "followed_member_id")
+    private Member followedMember;
 
-    public Follow(Member follower, Member followed) {
-        this.follower = follower;
-        this.followed = followed;
+    public Follow(Member followerMember, Member followedMember) {
+        this.followerMember = followerMember;
+        this.followedMember = followedMember;
     }
 }

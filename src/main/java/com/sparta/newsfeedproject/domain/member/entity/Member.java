@@ -28,12 +28,12 @@ public class Member extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
-    // 내가 팔로우 하는 유저 리스트
-    @OneToMany(mappedBy = "follower")
+    // 내가 팔로우 하는 팔로우 리스트
+    @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();
 
-    // 나를 팔로우 하는 유저 리스트
-    @OneToMany(mappedBy = "followed")
+    // 나를 팔로우 하는 팔로우 리스트
+    @OneToMany(mappedBy = "followedMember")
     private List<Follow> followerList = new ArrayList<>();
 
     // 차단친구

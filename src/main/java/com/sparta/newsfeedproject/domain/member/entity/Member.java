@@ -28,6 +28,10 @@ public class Member extends TimeStamped {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRoleEnum role = UserRoleEnum.USER;//기본값을 일반사용자로
+
     // 내가 팔로우 하는 팔로우 리스트
     @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();

@@ -2,13 +2,12 @@ package com.sparta.newsfeedproject.domain.member.service;
 
 import com.sparta.newsfeedproject.config.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
+import com.sparta.newsfeedproject.domain.member.dto.FollowResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
-import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.member.entity.UserRoleEnum;
-import com.sparta.newsfeedproject.domain.member.dto.FollowResponseDto;
 import com.sparta.newsfeedproject.domain.member.entity.Follow;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.entity.UserRoleEnum;
 import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;

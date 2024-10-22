@@ -41,5 +41,3 @@ public class PostController {
         return ResponseEntity.ok(responseDto);
     }
 }
-
-

@@ -1,5 +1,6 @@
 package com.sparta.newsfeedproject.domain.member.controller;
 
+import com.sparta.newsfeedproject.domain.member.dto.DeleteRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -20,11 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    //회원탈퇴
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<String> deleteMember(@PathVariable Long memberId, HttpServletRequest request) {
-        memberService.deleteMember(memberId, request);
-        return ResponseEntity.ok("회원탈퇴 완료");
+
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
@@ -52,5 +49,14 @@ public class MemberController {
         return new ResponseEntity<>(member.get(), HttpStatus.OK);
     }
 
+    //회원탈퇴
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable Long memberId, @RequestBody DeleteRequestDto requestDto) {
+        memberService.deleteMember(memberId, requestDto);
+        return ResponseEntity.ok("회원탈퇴 완료");
+
+    }
 
 }
+
+

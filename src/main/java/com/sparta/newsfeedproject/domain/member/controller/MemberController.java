@@ -2,6 +2,7 @@ package com.sparta.newsfeedproject.domain.member.controller;
 
 import com.sparta.newsfeedproject.domain.member.dto.FollowRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.FollowResponseDto;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import com.sparta.newsfeedproject.domain.member.entity.Follow;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -51,7 +52,9 @@ public class MemberController {
     private FollowRepository followRepository;
 
     @PostMapping("/follow")
-    public FollowResponseDto createFollow(@RequestBody FollowRequestDto requestDto) {
-        return memberService.createFollow(requestDto.getMemberId(), requestDto.getFollowedMemberId());
+    public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
+        Member member = (Member) servletRequest.getAttribute("member");
+        FollowResponseDto responseDto = memberService.createFollow(member, requestDto.getFollowedMemberId());
+        return ResponseEntity.ok(responseDto);
     }
 }

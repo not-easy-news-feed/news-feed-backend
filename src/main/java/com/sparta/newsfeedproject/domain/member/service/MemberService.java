@@ -69,12 +69,10 @@ public class MemberService {
     }
     private final FollowRepository followRepository;
 
-    public FollowResponseDto createFollow(Long memberId, Long followedMemberId) {
-        Member follower = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+    public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
         Member followed = memberRepository.findById(followedMemberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        Optional<Follow> followCheck = followRepository.findByFollowerMemberIdAndFollowedMemberId(memberId, followedMemberId);
+        Optional<Follow> followCheck = followRepository.findByFollowerMemberIdAndFollowedMemberId(follower.getId(), followedMemberId);
         if(followCheck.isPresent()) throw new RuntimeException("이미 팔로우 중인 유저입니다.");
 
         Follow follow = new Follow(follower, followed);

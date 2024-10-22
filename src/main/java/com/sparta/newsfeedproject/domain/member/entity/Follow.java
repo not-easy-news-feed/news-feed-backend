@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class Follow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

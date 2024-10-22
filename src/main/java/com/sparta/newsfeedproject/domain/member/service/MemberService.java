@@ -75,13 +75,15 @@ public class MemberService {
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
         Member followed = memberRepository.findById(followedMemberId)
     public BlockResponseDto createBlock(Long memberId, Long blockedId) {
+    public BlockResponseDto createBlock(Long memberId, Long blockedMemberId) {
         Member blockerMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         Optional<Follow> followCheck = followRepository.findByFollowerMemberIdAndFollowedMemberId(follower.getId(), followedMemberId);
         if(followCheck.isPresent()) throw new RuntimeException("이미 팔로우 중인 유저입니다.");
         Member blockedMember = memberRepository.findById(blockedId)
+        Member blockedMember = memberRepository.findById(blockedMemberId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
-        Optional<Block> blockCheck = blockRepository.findByBlockerMemberIdAndBlockedMemberId(memberId, blockedId);
+        Optional<Block> blockCheck = blockRepository.findByBlockerMemberIdAndBlockedMemberId(memberId, blockedMemberId);
         if (blockCheck.isPresent()) throw new RuntimeException("이미 차단 중인 유저입니다.");
 
         Follow follow = new Follow(follower, followed);

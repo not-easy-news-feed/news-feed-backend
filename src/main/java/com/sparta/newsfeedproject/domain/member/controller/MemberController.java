@@ -48,6 +48,6 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     @PostMapping("/block")
     public BlockResponseDto createBlock(@RequestBody BlockRequestDto requestDto) {
-        return memberService.createBlock(requestDto.getMemberId(), requestDto.getBlockedId());
+        return memberService.createBlock(requestDto.getMemberId(), requestDto.getBlockedMemberId());
     }
 }

@@ -6,6 +6,7 @@ import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -58,5 +59,10 @@ public class Post extends TimeStamped {
                 getCreatedAt(),
                 getUpdatedAt()
         );
+    }
+
+    public void updateData(@Valid PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
     }
 }

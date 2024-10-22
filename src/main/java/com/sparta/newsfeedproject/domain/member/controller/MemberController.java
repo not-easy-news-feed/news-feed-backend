@@ -20,11 +20,13 @@ import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
@@ -47,9 +49,10 @@ public class MemberController {
     private MemberRepository memberRepository;
     private FollowRepository followRepository;
 
-    @PostMapping("/api/follow")
-    public void followMember(@AuthenticationPrincipal MemberDetailsImpl memberDetails, @RequestBody Long followedId) {
-        Member follower = memberDetails.getMember();
+    @PostMapping("/follow")
+    public void followMember(@RequestBody Long memberId, @RequestBody Long followedId) {
+        Member follower = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 id: " + memberId));
         Member followed = memberRepository.findById(followedId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 id: " + followedId));
         Optional<Follow> followCheck = followRepository.findByFollowerIdAndFollowedId(follower.getId(), followedId);

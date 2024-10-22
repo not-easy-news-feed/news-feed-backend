@@ -6,7 +6,6 @@ import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
 import com.sparta.newsfeedproject.domain.post.repository.PostRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

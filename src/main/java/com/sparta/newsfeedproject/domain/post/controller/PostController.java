@@ -1,6 +1,5 @@
 package com.sparta.newsfeedproject.domain.post.controller;
 
-import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;

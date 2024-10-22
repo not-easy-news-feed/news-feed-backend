@@ -37,32 +37,9 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    private void initData(PostRequestDto requestDto, Member member) {
+    public Post(PostRequestDto requestDto, Member member) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
         this.member = member;
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-    }
-
-    public static Post from(PostRequestDto requestDto, Member member) {
-        Post post = new Post();
-        post.initData(requestDto, member);
-        return post;
-    }
-
-    public PostResponseDto to() {
-        return new PostResponseDto(
-                id,
-                this.member.getEmail(),
-                title,
-                content,
-                comments.stream().map(Comment::to).toList(),
-                getCreatedAt(),
-                getUpdatedAt()
-        );
-    }
-
-    public void updateData(@Valid PostRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
     }
 }

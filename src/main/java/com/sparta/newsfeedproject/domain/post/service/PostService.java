@@ -19,22 +19,9 @@ public class PostService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto) {
-        Member member = memberRepository.findById(requestDto.getMemberId()).orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + requestDto.getMemberId()));
-        Post post = postRepository.save(Post.from(requestDto, member));
-        return post.to();
-    }
-
-    @Transactional
-    public PostResponseDto updatePost(Long postId, @Valid PostRequestDto requestDto, Member member) {
-        Post post = postRepository.findByPostId(postId);
-
-        // 작성자 검증 로직
-        if (!post.getMember().getId().equals(member.getId())) {
-            throw new IllegalArgumentException("게시물을 수정할 권한이 없습니다.");
-        }
-
-        post.updateData(requestDto);
-        return post.to();
+    public PostResponseDto createPost(PostRequestDto requestDto, Member member) {
+        Post post = new Post(requestDto, member);
+        postRepository.save(post);
+        return new PostResponseDto(post);
     }
 }

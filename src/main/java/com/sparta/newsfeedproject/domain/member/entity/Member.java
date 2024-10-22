@@ -32,10 +32,6 @@ public class Member extends TimeStamped {
     @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();
 
-    // 나를 팔로우 하는 팔로우 리스트
-    @OneToMany(mappedBy = "followedMember")
-    private List<Follow> followerList = new ArrayList<>();
-
     // 차단친구
     @ManyToMany
     @JoinTable(

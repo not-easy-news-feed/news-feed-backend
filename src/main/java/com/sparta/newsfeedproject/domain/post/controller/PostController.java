@@ -7,6 +7,10 @@ import com.sparta.newsfeedproject.domain.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,26 +33,16 @@ public class PostController {
                 .body(responseDto);
     }
 
-    @PutMapping("/{postId}")
-    public ResponseEntity<PostResponseDto> updatePost(
-            @PathVariable Long postId,
-            @RequestBody @Valid PostRequestDto requestDto,
+    @GetMapping
+    public ResponseEntity<Page<PostResponseDto>> getPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
-
         Member member = (Member) request.getAttribute("member");
 
-        PostResponseDto responseDto = postService.updatePost(postId, requestDto, member);
-        return ResponseEntity.ok(responseDto);
-    }
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<PostResponseDto> posts = postService.getPosts(pageable, member);
 
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId,
-                                             HttpServletRequest request) {
-
-        Member member = (Member) request.getAttribute("member");
-        postService.deletePost(postId, member);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("게시물이 성공적으로 삭제되었습니다.");
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 }

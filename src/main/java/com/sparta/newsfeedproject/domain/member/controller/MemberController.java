@@ -1,8 +1,14 @@
 package com.sparta.newsfeedproject.domain.member.controller;
 
+import com.sparta.newsfeedproject.domain.member.dto.FollowRequestDto;
+import com.sparta.newsfeedproject.domain.member.dto.FollowResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
+import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,4 +38,10 @@ public class MemberController {
         return ResponseEntity.ok("로그인 성공");
     }
 
+    @PostMapping("/follow")
+    public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
+        Member member = (Member) servletRequest.getAttribute("member");
+        FollowResponseDto responseDto = memberService.createFollow(member, requestDto.getFollowedMemberId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
 }

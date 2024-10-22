@@ -1,16 +1,12 @@
 package com.sparta.newsfeedproject.domain.post.dto;
 
 import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
-import com.sparta.newsfeedproject.domain.comment.entity.Comment;
-import com.sparta.newsfeedproject.domain.common.TimeStamped;
-import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

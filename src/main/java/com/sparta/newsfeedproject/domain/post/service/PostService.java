@@ -1,7 +1,6 @@
 package com.sparta.newsfeedproject.domain.post.service;
 
 import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto, Member member) {

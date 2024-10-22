@@ -29,4 +29,15 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
     }
+
+    public PostResponseDto(Post post, List<CommentResponseDto> comments) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.comments = comments;
+        //        this.member = post.getMember();
+        this.member = new MemberResponseDto(post.getMember());
+        this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
+    }
 }

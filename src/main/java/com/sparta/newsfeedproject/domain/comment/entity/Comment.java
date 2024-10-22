@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class Comment extends TimeStamped {
     private String content;
 
     @Column(nullable = false)
-    private String username;
+    private String name;
 
     // 작성자와 댓글 = 다 대 일
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,11 +34,16 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "post_id",nullable = false)
     private Post post;
 
-    public Comment(String content, Member member, Post post) {
+    public Comment(String content, Post post, Member member) {
         this.content = content;
-        this.member = member;
         this.post = post;
-        this.username = member.getUsername();
+        this.member = member;
+        this.name = member.getName();
+    }
+
+    public void update(String content, LocalDateTime updatedAt) {
+        this.content = content;
+        this.updatedAt= updatedAt;
     }
 
 }

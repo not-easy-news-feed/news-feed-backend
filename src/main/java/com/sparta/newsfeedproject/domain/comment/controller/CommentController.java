@@ -38,10 +38,6 @@ public class CommentController {
         String email = claims.getSubject();
         // Member 객체 조회
         Member member = memberService.findByEmail(email);
-        if(member == null) {
-            log.info("유효하지 않은 사용자입니다.");
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         CommentResponseDto responseDto = commentService.createComment(postId, requestDto, member);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }

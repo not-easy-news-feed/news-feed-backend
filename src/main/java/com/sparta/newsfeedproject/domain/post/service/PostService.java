@@ -1,12 +1,8 @@
 package com.sparta.newsfeedproject.domain.post.service;
 
 import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
-import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
-import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
 import com.sparta.newsfeedproject.domain.post.repository.PostRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
-    public void deletePost(Long postId) {
-        postRepository.findPostBytId(postId);
+    public void deletePost(Long postId, Member member) {
+        Post post = postRepository.findPostBytId(postId);
+
+        if(!post.getMember().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("작성자가 아닙니다. 게시물을 삭제할 권한이 없습니다.");
+        }
+
         postRepository.deleteById(postId);
     }
 

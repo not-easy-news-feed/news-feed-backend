@@ -68,4 +68,9 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
     }
+
+    // 사용자 조회
+    public Optional<Member> getMemberWithPosts(Long id) {
+        return memberRepository.findById(id);
+    }
 }

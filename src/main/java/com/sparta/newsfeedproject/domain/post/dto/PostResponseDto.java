@@ -25,7 +25,7 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.member = new MemberResponseDto(post.getMember());
+        this.memberResponseDto = new MemberResponseDto(post.getMember());
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
     }

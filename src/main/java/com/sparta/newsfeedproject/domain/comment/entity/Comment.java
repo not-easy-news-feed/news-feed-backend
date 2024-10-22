@@ -41,9 +41,8 @@ public class Comment extends TimeStamped {
         this.name = member.getName();
     }
 
-    public void update(String content, LocalDateTime updatedAt) {
+    public void update(String content) {
         this.content = content;
-        this.updatedAt= updatedAt;
     }
 
 }

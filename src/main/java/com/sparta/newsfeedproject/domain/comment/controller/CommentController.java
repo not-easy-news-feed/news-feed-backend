@@ -31,17 +31,8 @@ public class CommentController {
             @RequestBody CommentRequestDto requestDto,
             HttpServletRequest request //Spring Security+JWT 인증 이후에 @AuthenticationPrincipal UserDetailsImpl 로 파라미터를 받는부분 필요
             ) {
-        String token = jwtUtil.getTokenFromRequest(request);//토큰 가져오기
-        String tokenValue = jwtUtil.substringToken(token);//자르기
-        //사용자 정보 추출
-        Claims claims = jwtUtil.getUserInfoFromToken(tokenValue);
-        String email = claims.getSubject();
         // Member 객체 조회
-        Member member = memberService.findByEmail(email);
-        if(member == null) {
-            log.info("유효하지 않은 사용자입니다.");
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        Member member = (Member) request.getAttribute("member");
         CommentResponseDto responseDto = commentService.createComment(postId, requestDto, member);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -53,13 +44,8 @@ public class CommentController {
             @RequestBody CommentRequestDto requestDto,
             HttpServletRequest request
     ) {
-        String token = jwtUtil.getTokenFromRequest(request);//토큰 가져오기
-        String tokenValue = jwtUtil.substringToken(token);//자르기
-        //사용자 정보 추출
-        Claims claims = jwtUtil.getUserInfoFromToken(tokenValue);
-        String email = claims.getSubject();
         // Member 객체 조회
-        Member member = memberService.findByEmail(email);
+        Member member = (Member) request.getAttribute("member");
         if(member == null) {
             log.info("유효하지 않은 사용자 입니다.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

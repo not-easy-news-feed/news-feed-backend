@@ -26,11 +26,6 @@ public class MemberService {
         String name = requestDto.getName();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-//        Optional<Member> checkName = memberRepository.findByName(name);
-//        if (checkName.isPresent()) {
-//            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
-//        }
-
         String email = requestDto.getEmail();
         Optional<Member> checkEmail = memberRepository.findByEmail(email);
         if (checkEmail.isPresent()) {

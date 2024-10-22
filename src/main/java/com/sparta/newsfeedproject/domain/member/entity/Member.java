@@ -44,7 +44,7 @@ public class Member extends TimeStamped {
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
-    private Set<Member> friendsList = new HashSet<Member>();
+    private Set<Member> friendsList = new HashSet<>();
 
     // 차단친구
     @ManyToMany

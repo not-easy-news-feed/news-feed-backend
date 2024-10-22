@@ -5,6 +5,7 @@ import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,14 @@ import java.util.Optional;
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
+
     private final MemberService memberService;
 
+    //회원탈퇴
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable Long memberId, HttpServletRequest request) {
+        memberService.deleteMember(memberId, request);
+        return ResponseEntity.ok("회원탈퇴 완료");
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {

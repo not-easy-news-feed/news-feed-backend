@@ -36,14 +36,9 @@ public class Member extends TimeStamped {
     @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();
 
-    // 차단친구
-    @ManyToMany
-    @JoinTable(
-            name="blocked_friends",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "blocked_friend_id")
-    )
-    private Set<Member> blockedList = new HashSet<>();
+    // 차단 리스트
+    @OneToMany(mappedBy = "blockerMember")
+    private List<Member> blockedList = new ArrayList<>();
 
     public Member(String name, String email, String password, UserRoleEnum role) {
         this.name = name;

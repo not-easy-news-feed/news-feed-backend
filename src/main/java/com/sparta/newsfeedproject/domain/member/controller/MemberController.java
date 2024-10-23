@@ -57,13 +57,8 @@ public class MemberController {
     ) {
         Member member = (Member) request.getAttribute("member");
         memberService.deleteMember(memberId, requestDto, member);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
+        return ResponseEntity.status(HttpStatus.OK).body("회원탈퇴 완료");
     }
-
-
-
-
 }
 
 

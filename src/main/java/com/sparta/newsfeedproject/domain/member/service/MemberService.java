@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -77,21 +78,19 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long memberId, DeleteRequestDto requestDto,Member member) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        Member deletedMember = memberRepository.findById(memberId).orElseThrow(()
+                -> new NoSuchElementException("등록된 사용자가 없습니다."));
+
+        if(!memberId.equals(member.getId())) throw new SecurityException("삭제할 권한이 없습니다.");
 
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
-        }
+        if (!email.equals(deletedMember.getEmail())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password, deletedMember.getPassword())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
 
-        if (!email.equals(requestDto.getEmail())) {
-            throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
-        }
         // 사용자 삭제
-        memberRepository.delete(member);
+        memberRepository.delete(deletedMember);
     }
 }
 

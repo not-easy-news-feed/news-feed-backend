@@ -2,17 +2,19 @@ package com.sparta.newsfeedproject.domain.comment.controller;
 
 import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
 import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
-import com.sparta.newsfeedproject.domain.comment.dto.PostCommentsResponseDto;
 import com.sparta.newsfeedproject.domain.comment.service.CommentService;
+import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.post.entity.Post;
-import com.sparta.newsfeedproject.domain.post.service.PostService;
+import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor

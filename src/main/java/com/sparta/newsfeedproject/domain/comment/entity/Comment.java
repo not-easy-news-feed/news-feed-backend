@@ -23,7 +23,7 @@ public class Comment extends TimeStamped {
 
     // 작성자와 댓글 = 다 대 일
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id",nullable = false)
     private Member member;
 
     // 게시글과 댓글 = 다 대 일

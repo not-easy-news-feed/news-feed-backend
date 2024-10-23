@@ -72,8 +72,15 @@ public class MemberService {
 
         if(!memberId.equals(member.getId())) throw new SecurityException("수정할 권한이 없습니다.");
 
-        String password = passwordEncoder.encode(requestDto.getPassword());
-        updatedMember.update(requestDto.getName(), password);
+        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+
+        if (requestDto.getUpdatedPassword().equals(requestDto.getPassword())) throw new IllegalArgumentException("현재 비밀번호와 동일합니다.");
+
+        String password = passwordEncoder.encode(requestDto.getUpdatedPassword());
+
+        updatedMember.update(requestDto.getUpdatedName(), password);
+
+
         memberRepository.saveAndFlush(updatedMember);
         return new MemberResponseDto(updatedMember);
     }

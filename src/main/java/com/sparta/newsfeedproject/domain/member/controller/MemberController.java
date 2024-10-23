@@ -50,4 +50,11 @@ public class MemberController {
         BlockResponseDto responseDto = memberService.createBlock(member, requestDto.getBlockedMemberId());
         return ResponseEntity.ok(responseDto);
     }
+
+    @DeleteMapping("/block")
+    public ResponseEntity<String> deleteBlock(HttpServletRequest request, @RequestBody BlockRequestDto requestDto) {
+        Member member = (Member) request.getAttribute("member");
+        memberService.deleteBlock(member, requestDto.getBlockedMemberId());
+        return ResponseEntity.ok("차단 해제 성공");
+    }
 }

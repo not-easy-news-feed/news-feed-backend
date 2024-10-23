@@ -42,7 +42,7 @@ public class Post extends TimeStamped {
         this.member = member;
     }
 
-    public void updateData(@Valid PostRequestDto requestDto) {
+    public void updateData(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }

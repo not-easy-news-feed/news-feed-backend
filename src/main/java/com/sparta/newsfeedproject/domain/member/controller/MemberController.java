@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +35,13 @@ public class MemberController {
         Member member = (Member) servletRequest.getAttribute("member");
         FollowResponseDto responseDto = memberService.createFollow(member, requestDto.getFollowedMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @DeleteMapping("/follow")
+    public ResponseEntity<String> deleteFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
+        Member member = (Member) servletRequest.getAttribute("member");
+        memberService.deleteFollow(member, requestDto.getFollowedMemberId());
+        return ResponseEntity.ok("팔로우 해제 성공");
     }
 
     @PostMapping("/block")

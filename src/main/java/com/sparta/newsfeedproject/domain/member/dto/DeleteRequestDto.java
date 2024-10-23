@@ -6,5 +6,4 @@ import lombok.Getter;
 public class DeleteRequestDto {
     private String email;
     private String password;
-
 }

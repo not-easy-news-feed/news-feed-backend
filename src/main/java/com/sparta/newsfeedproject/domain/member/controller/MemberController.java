@@ -51,8 +51,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/follow")
-    public ResponseEntity<String> deleteFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto
-            requestDto) {
+    public ResponseEntity<String> deleteFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
         Member member = (Member) servletRequest.getAttribute("member");
         memberService.deleteFollow(member, requestDto.getFollowedMemberId());
         return ResponseEntity
@@ -61,8 +60,7 @@ public class MemberController {
     }
 
     @PostMapping("/block")
-    public ResponseEntity<BlockResponseDto> createBlock(HttpServletRequest request, @RequestBody BlockRequestDto
-            requestDto) {
+    public ResponseEntity<BlockResponseDto> createBlock(HttpServletRequest request, @RequestBody BlockRequestDto requestDto) {
         Member member = (Member) request.getAttribute("member");
         BlockResponseDto responseDto = memberService.createBlock(member, requestDto.getBlockedMemberId());
         return ResponseEntity.ok(responseDto);

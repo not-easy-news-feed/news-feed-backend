@@ -35,19 +35,10 @@ public class Member extends TimeStamped {
     // 내가 팔로우 하는 팔로우 리스트
     @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();
+
     // 사용자가 작성한 게시물 목록 (1:N 관계)
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts;
-
-
-    // 친구
-    @ManyToMany
-    @JoinTable(
-            name="friends",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id")
-    )
-    private Set<Member> friendsList = new HashSet<>();
 
     // 차단 리스트
     @OneToMany(mappedBy = "blockerMember")

@@ -1,6 +1,7 @@
 package com.sparta.newsfeedproject.domain.member.entity;
 
 import com.sparta.newsfeedproject.domain.common.TimeStamped;
+import com.sparta.newsfeedproject.domain.member.dto.UpdateRequestDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -62,4 +63,9 @@ public class Member extends TimeStamped {
         this.role = role;
     }
 
+    public void update(UpdateRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.email = requestDto.getEmail();
+        this.password = requestDto.getPassword();
+    }
 }

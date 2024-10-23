@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final CommentService commentService;
     private final JwtUtil jwtUtil;
-    private final MemberService memberService;
+    private final MemberService  memberService;
 
     @PostMapping("/{postId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
@@ -61,7 +61,7 @@ public class CommentController {
         // Member 객체 조회
         Member member = memberService.findByEmail(email);
         if(member == null) {
-            log.info("유효하지 않은 사용자 입니다.");
+            log.info("유효하지 않은 commet사용자 입니다.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         CommentResponseDto responseDto = commentService.updateComment(postId,commentId,requestDto,member);

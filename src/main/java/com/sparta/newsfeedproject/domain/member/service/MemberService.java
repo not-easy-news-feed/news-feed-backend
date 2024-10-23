@@ -93,4 +93,12 @@ public class MemberService {
         Block block = new Block(blockedMember, blockerMember);
         return new BlockResponseDto(blockRepository.save(block));
     }
+
+    public void deleteBlock(Member blocker, Long blockedMemberId) {
+        memberRepository.findById(blockedMemberId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+        Block block = blockRepository.findByBlockerMemberIdAndBlockedMemberId(blocker.getId(), blockedMemberId)
+                .orElseThrow(() -> new NoSuchElementException("차단 중인 유저가 아닙니다."));
+        blockRepository.delete(block);
+    }
 }

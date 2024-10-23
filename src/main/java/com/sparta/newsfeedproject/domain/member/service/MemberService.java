@@ -12,7 +12,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    // 사용자 및 게시물 조회
+
     public Optional<Member> getMemberWithPosts(Long id) {
         return memberRepository.findById(id);
     }

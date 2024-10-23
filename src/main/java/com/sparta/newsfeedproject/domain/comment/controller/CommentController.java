@@ -2,10 +2,9 @@ package com.sparta.newsfeedproject.domain.comment.controller;
 
 import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
 import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
+import com.sparta.newsfeedproject.domain.comment.dto.PostCommentsResponseDto;
 import com.sparta.newsfeedproject.domain.comment.service.CommentService;
-import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final JwtUtil jwtUtil;
-    private final MemberService memberService;
 
     //댓글 작성
     @PostMapping("/{postId}/comments")
@@ -60,5 +57,12 @@ public class CommentController {
         Member member = (Member) request.getAttribute("member");
         commentService.deleteComment(postId, commentId, member);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    //댓글 조회
+    @GetMapping("/{postId}/comments/all")
+    public ResponseEntity<PostCommentsResponseDto> getComments(@PathVariable Long postId) { //게시글의 댓글자체는 로그인 없어도 볼 수 있다.
+        PostCommentsResponseDto responseDto = commentService.getComments(postId);
+        return ResponseEntity.ok(responseDto);
     }
 }

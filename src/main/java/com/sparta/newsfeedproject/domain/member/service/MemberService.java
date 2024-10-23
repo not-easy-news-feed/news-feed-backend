@@ -2,10 +2,7 @@ package com.sparta.newsfeedproject.domain.member.service;
 
 import com.sparta.newsfeedproject.config.PasswordEncoder;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
-import com.sparta.newsfeedproject.domain.member.dto.BlockResponseDto;
-import com.sparta.newsfeedproject.domain.member.dto.FollowResponseDto;
-import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
-import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
+import com.sparta.newsfeedproject.domain.member.dto.*;
 import com.sparta.newsfeedproject.domain.member.entity.Block;
 import com.sparta.newsfeedproject.domain.member.entity.Follow;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
@@ -16,6 +13,7 @@ import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -23,6 +21,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final BlockRepository blockRepository;
@@ -53,6 +52,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+
     public void login(LoginRequestDto requestDto, HttpServletResponse response) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
@@ -65,6 +65,24 @@ public class MemberService {
 
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());
         jwtUtil.addJwtToCookie(token, response);
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId, DeleteRequestDto requestDto,Member member) {
+
+        Member deletedMember = memberRepository.findById(memberId).orElseThrow(()
+                -> new NoSuchElementException("등록된 사용자가 없습니다."));
+
+        if(!memberId.equals(member.getId())) throw new SecurityException("삭제할 권한이 없습니다.");
+
+        String email = requestDto.getEmail();
+        String password = requestDto.getPassword();
+
+        if (!email.equals(deletedMember.getEmail())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password, deletedMember.getPassword())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
+
+        // 사용자 삭제
+        memberRepository.delete(deletedMember);
     }
 
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
@@ -102,3 +120,4 @@ public class MemberService {
         blockRepository.delete(block);
     }
 }
+

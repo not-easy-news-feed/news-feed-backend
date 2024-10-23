@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
+
     private final MemberService memberService;
 
     //회원가입
@@ -30,8 +31,20 @@ public class MemberController {
         return ResponseEntity.ok("로그인 성공");
     }
 
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable Long memberId,
+                                               @RequestBody DeleteRequestDto requestDto,
+                                               HttpServletRequest request
+    ) {
+        Member member = (Member) request.getAttribute("member");
+        memberService.deleteMember(memberId, requestDto, member);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("회원탈퇴 완료");
+    }
+
+
     @PostMapping("/follow")
-    public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
+    public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest
+                                                                  servletRequest, @RequestBody FollowRequestDto requestDto) {
         Member member = (Member) servletRequest.getAttribute("member");
         FollowResponseDto responseDto = memberService.createFollow(member, requestDto.getFollowedMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
@@ -62,3 +75,4 @@ public class MemberController {
                 .body("차단 해제 성공");
     }
 }
+

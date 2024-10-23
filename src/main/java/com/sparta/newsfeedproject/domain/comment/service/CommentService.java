@@ -21,7 +21,7 @@ public class CommentService {
     public CommentResponseDto createComment(Long postId, CommentRequestDto requestDto, Member member) {
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
         Comment comment = new Comment(requestDto.getContent(), post, member);
         commentRepository.save(comment); //생성 및 저장
@@ -30,13 +30,12 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto requestDto, Member member)
-    {
+    public CommentResponseDto updateComment(Long postId, Long commentId, CommentRequestDto requestDto, Member member) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(()-> new IllegalArgumentException("게시글에 댓글이 존재하지 않습니다."));
-        if(!comment.getMember().getId().equals(member.getId())){
+                .orElseThrow(() -> new IllegalArgumentException("게시글에 댓글이 존재하지 않습니다."));
+        if (!comment.getMember().getId().equals(member.getId())) {
             throw new SecurityException("본인의 댓글만 수정할 수 있습니다.");
         }
         comment.update(requestDto.getContent());

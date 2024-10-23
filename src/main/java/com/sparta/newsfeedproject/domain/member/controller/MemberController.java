@@ -23,7 +23,7 @@ public class MemberController {
     ) {
         Member member = (Member) request.getAttribute("member");
         memberService.deleteMember(memberId, requestDto, member);
-        return ResponseEntity.status(HttpStatus.OK).body("회원탈퇴 완료");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("회원탈퇴 완료");
     }
 }
 

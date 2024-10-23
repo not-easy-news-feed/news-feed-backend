@@ -1,6 +1,8 @@
 package com.sparta.newsfeedproject.domain.post.service;
 
+import com.sparta.newsfeedproject.domain.member.entity.Follow;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
@@ -11,11 +13,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto, Member member) {
@@ -54,5 +60,21 @@ public class PostService {
     public Page<PostResponseDto> getPosts(Pageable pageable) {
 
         return postRepository.findAll(pageable).map(PostResponseDto::new);
+    }
+
+    @Transactional
+    public Page<PostResponseDto> getFriendPosts(Long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new NoSuchElementException("no"));
+        List<Long> friendIdList = member.getFollowingList()
+                .stream()
+                .map(Follow::getFollowedMember)
+                .filter(followedMember -> followedMember.getFollowingList()
+                        .stream()
+                        .map(Follow::getFollowedMember)
+                        .toList()
+                        .contains(member))
+                .map(Member::getId)
+                .toList();
+        return postRepository.findAllByMemberIdIn(friendIdList, pageable).map(PostResponseDto::new);
     }
 }

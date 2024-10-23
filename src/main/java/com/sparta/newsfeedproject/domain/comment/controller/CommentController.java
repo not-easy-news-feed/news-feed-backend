@@ -28,7 +28,7 @@ public class CommentController {
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto,
-            HttpServletRequest request //Spring Security+JWT 인증 이후에 @AuthenticationPrincipal UserDetailsImpl 로 파라미터를 받는부분 필요
+            HttpServletRequest request
     ) {
         // Member 객체 조회
         Member member = (Member) request.getAttribute("member");

@@ -26,6 +26,7 @@ public class PostService {
         }
 
         post.updateData(requestDto);
+        postRepository.saveAndFlush(post);
         return new PostResponseDto(post);
     }
 }

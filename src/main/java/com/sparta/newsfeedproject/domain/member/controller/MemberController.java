@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
@@ -29,6 +31,18 @@ public class MemberController {
     public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
         memberService.login(requestDto, response);
         return ResponseEntity.ok("로그인 성공");
+    }
+
+    @GetMapping("/{memberId}")
+    public ResponseEntity<?> getMember(@PathVariable Long memberId) {
+        Optional<Member> member = memberService.getMemberWithPosts(memberId);
+
+        // 프로필이 존재하지 않는 경우 404
+        if (member.isEmpty()) {
+            return new ResponseEntity<>("Member not found", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(member.get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{memberId}")

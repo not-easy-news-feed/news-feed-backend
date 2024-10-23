@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -67,8 +66,9 @@ public class MemberService {
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());
         jwtUtil.addJwtToCookie(token, response);
     }
-    public Optional<Member> getMemberWithPosts(Long id) {
-        return memberRepository.findById(id);
+    public Member getMemberWithPosts(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 유저입니다."));
     }
 
     @Transactional
@@ -82,8 +82,8 @@ public class MemberService {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
-        if (!email.equals(deletedMember.getEmail())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
-        if (!passwordEncoder.matches(password, deletedMember.getPassword())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
+        if (!email.equals(deletedMember.getEmail())) throw new IllegalArgumentException("이메일이 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password, deletedMember.getPassword())) throw new IllegalArgumentException("비밀번호 일치하지 않습니다.");
 
         // 사용자 삭제
         memberRepository.delete(deletedMember);

@@ -41,10 +41,6 @@ public class Member extends TimeStamped {
     @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();
 
-    // 사용자가 작성한 게시물 목록 (1:N 관계)
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Post> posts;
-
     // 차단 리스트
     @OneToMany(mappedBy = "blockerMember")
     private List<Block> blockedList = new ArrayList<>();

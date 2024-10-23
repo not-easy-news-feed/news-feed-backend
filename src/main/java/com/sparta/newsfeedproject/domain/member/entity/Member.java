@@ -1,12 +1,10 @@
 package com.sparta.newsfeedproject.domain.member.entity;
 
 import com.sparta.newsfeedproject.domain.common.TimeStamped;
-import com.sparta.newsfeedproject.domain.member.dto.UpdateRequestDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.List;

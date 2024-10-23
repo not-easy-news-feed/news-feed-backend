@@ -52,9 +52,6 @@ public class PostService {
     }
 
     public Page<PostResponseDto> getPosts(Pageable pageable, Member member) {
-        if (member == null) {
-            throw new IllegalArgumentException("사용자가 인증되지 않았습니다.");
-        }
 
         return postRepository.findAll(pageable).map(PostResponseDto::new);
     }

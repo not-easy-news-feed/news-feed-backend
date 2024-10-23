@@ -41,7 +41,9 @@ public class MemberController {
     public ResponseEntity<String> deleteFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
         Member member = (Member) servletRequest.getAttribute("member");
         memberService.deleteFollow(member, requestDto.getFollowedMemberId());
-        return ResponseEntity.ok("팔로우 해제 성공");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("팔로우 해제 성공");
     }
 
     @PostMapping("/block")
@@ -55,6 +57,8 @@ public class MemberController {
     public ResponseEntity<String> deleteBlock(HttpServletRequest request, @RequestBody BlockRequestDto requestDto) {
         Member member = (Member) request.getAttribute("member");
         memberService.deleteBlock(member, requestDto.getBlockedMemberId());
-        return ResponseEntity.ok("차단 해제 성공");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("차단 해제 성공");
     }
 }

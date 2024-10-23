@@ -11,6 +11,7 @@ import com.sparta.newsfeedproject.domain.member.repository.BlockRepository;
 import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,6 +87,21 @@ public class MemberService {
 
         // 사용자 삭제
         memberRepository.delete(deletedMember);
+    }
+
+    @Transactional
+    public MemberResponseDto updateMember(Long memberId, UpdateRequestDto requestDto, Member member) {
+
+        Member updatedMember = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("등록된 사용자가 없습니다."));
+
+        if (!memberId.equals(member.getId())) throw new SecurityException("수정할 권한이 없습니다.");
+        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        if (requestDto.getUpdatedPassword().equals(requestDto.getPassword())) throw new IllegalArgumentException("현재 비밀번호와 동일합니다.");
+
+        String password = passwordEncoder.encode(requestDto.getUpdatedPassword());
+        updatedMember.update(requestDto.getUpdatedName(), password);
+        memberRepository.saveAndFlush(updatedMember);
+        return new MemberResponseDto(updatedMember);
     }
 
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {

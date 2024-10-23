@@ -3,7 +3,6 @@ package com.sparta.newsfeedproject.domain.member.controller;
 import com.sparta.newsfeedproject.domain.member.dto.*;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
-import com.sparta.newsfeedproject.domain.post.dto.MemberResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -16,6 +16,13 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
+    public PostResponseDto createPost(PostRequestDto requestDto, Member member) {
+        Post post = new Post(requestDto, member);
+        postRepository.save(post);
+        return new PostResponseDto(post);
+    }
+
+    @Transactional
     public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다."));

@@ -18,6 +18,17 @@ public class PostController {
 
     private final PostService postService;
 
+    @PostMapping()
+    public ResponseEntity<PostResponseDto> createPost(
+            @RequestBody @Valid PostRequestDto requestDto,
+            HttpServletRequest request) {
+        Member member = (Member) request.getAttribute("member");
+        PostResponseDto responseDto = postService.createPost(requestDto, member);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseDto);
+    }
+
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponseDto> updatePost(
             @PathVariable Long postId,

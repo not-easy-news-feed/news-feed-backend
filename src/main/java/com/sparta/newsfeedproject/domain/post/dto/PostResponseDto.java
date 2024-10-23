@@ -25,7 +25,7 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.memberResponseDto = new MemberResponseDto(post.getMember());
+        this.member = new MemberResponseDto(post.getMember());
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
     }
@@ -34,9 +34,8 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.comments = comments;
-        //        this.member = post.getMember();
-        this.member = new MemberResponseDto(post.getMember());
+        this.commentResponseDtoList = comments;
+        this.memberResponseDto = new MemberResponseDto(post.getMember());
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
     }

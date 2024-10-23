@@ -32,7 +32,7 @@ public class MemberController {
         return ResponseEntity.ok("로그인 성공");
     }
 
-    // 프로필 조회
+
     @GetMapping("/{memberId}")
     public ResponseEntity<?> getMember(@PathVariable Long memberId) {
         Optional<Member> member = memberService.getMemberWithPosts(memberId);

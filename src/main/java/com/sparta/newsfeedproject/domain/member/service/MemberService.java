@@ -59,13 +59,13 @@ public class MemberService {
         jwtUtil.addJwtToCookie(token,response);
     }
 
+    // 사용자 및 게시물 조회
+    public Optional<Member> getMemberWithPosts(Long id) {
+        return memberRepository.findById(id);
+    }
+
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(()-> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
-    }
-
-    // 사용자 조회
-    public Optional<Member> getMemberWithPosts(Long id) {
-        return memberRepository.findById(id);
     }
 }

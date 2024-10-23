@@ -2,10 +2,11 @@ package com.sparta.newsfeedproject.domain.comment.controller;
 
 import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
 import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
+import com.sparta.newsfeedproject.domain.comment.dto.PostCommentsResponseDto;
 import com.sparta.newsfeedproject.domain.comment.service.CommentService;
-import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
-import com.sparta.newsfeedproject.domain.member.service.MemberService;
+import com.sparta.newsfeedproject.domain.post.entity.Post;
+import com.sparta.newsfeedproject.domain.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,7 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    //댓글 조회
     @GetMapping("/{postId}/comments/all")
     public ResponseEntity<PostCommentsResponseDto> getComments(@PathVariable Long postId) { //게시글의 댓글자체는 로그인 없어도 볼 수 있다.
         Post post = postService.findPostById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));

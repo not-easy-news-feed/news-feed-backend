@@ -2,6 +2,7 @@ package com.sparta.newsfeedproject.domain.comment.service;
 
 import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
 import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
+import com.sparta.newsfeedproject.domain.comment.dto.PostCommentsResponseDto;
 import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.comment.repository.CommentRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;

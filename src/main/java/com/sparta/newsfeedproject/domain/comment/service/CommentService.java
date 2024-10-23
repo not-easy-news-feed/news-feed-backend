@@ -42,4 +42,12 @@ public class CommentService {
         commentRepository.saveAndFlush(comment);
         return new CommentResponseDto(comment);
     }
+
+    @Transactional
+    public void deleteComment(Long postId, Long commentId, Member member) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+        if(!comment.getMember().getId().equals(member.getId())) throw new SecurityException("본인의 댓글만 삭제할 수 있습니다.");
+        commentRepository.delete(comment);
+    }
 }

@@ -32,6 +32,11 @@ public class Member extends TimeStamped {
     @Column(nullable = false)
     private UserRoleEnum role = UserRoleEnum.USER;//기본값을 일반사용자로
 
+
+    // 사용자가 작성한 게시물 목록 (1:N 관계)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Post> posts;
+
     // 내가 팔로우 하는 팔로우 리스트
     @OneToMany(mappedBy = "followerMember")
     private List<Follow> followingList = new ArrayList<>();
@@ -49,6 +54,11 @@ public class Member extends TimeStamped {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public void update(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 
 }

@@ -32,6 +32,18 @@ public class MemberController {
         memberService.login(requestDto, response);
         return ResponseEntity.ok("로그인 성공");
     }
+    // 프로필 수정
+    @PutMapping("/{memberId}")
+    public ResponseEntity<?> updateMember(@PathVariable Long memberId, @RequestBody UpdateRequestDto requestDto, HttpServletRequest request) {
+
+        Member member = (Member) request.getAttribute("member");
+
+        MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto, member);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+
+
+    }
 
     @GetMapping("/{memberId}")
     public ResponseEntity<?> getMember(@PathVariable Long memberId) {

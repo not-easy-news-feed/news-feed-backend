@@ -3,6 +3,7 @@ package com.sparta.newsfeedproject.domain.member.controller;
 import com.sparta.newsfeedproject.domain.member.dto.*;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
+import com.sparta.newsfeedproject.domain.post.dto.MemberResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,18 @@ public class MemberController {
     public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
         memberService.login(requestDto, response);
         return ResponseEntity.ok("로그인 성공");
+    }
+    // 프로필 수정
+    @PutMapping("/{memberId}")
+    public ResponseEntity<?> updateMember(@PathVariable Long memberId, @RequestBody UpdateRequestDto requestDto, HttpServletRequest request) {
+
+        Member member = (Member) request.getAttribute("member");
+
+        MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto, member);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+
+
     }
 
     @PostMapping("/follow")

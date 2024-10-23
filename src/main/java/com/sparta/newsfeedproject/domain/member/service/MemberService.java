@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -67,11 +68,21 @@ public class MemberService {
     }
 
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
-        Member followed = memberRepository.findById(followedMemberId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        Member followed = memberRepository.findById(followedMemberId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
         Optional<Follow> followCheck = followRepository.findByFollowerMemberIdAndFollowedMemberId(follower.getId(), followedMemberId);
-        if(followCheck.isPresent()) throw new RuntimeException("이미 팔로우 중인 유저입니다.");
+        if(followCheck.isPresent())
+            throw new RuntimeException("이미 팔로우 중인 유저입니다.");
         Follow follow = new Follow(follower, followed);
         return new FollowResponseDto(followRepository.save(follow));
+    }
+
+    public void deleteFollow(Member follower, Long followedMemberId) {
+        memberRepository.findById(followedMemberId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        Follow follow = followRepository.findByFollowerMemberIdAndFollowedMemberId(follower.getId(), followedMemberId)
+                .orElseThrow(() -> new NoSuchElementException("팔로우 중인 유저가 아닙니다."));
+        followRepository.delete(follow);
     }
 
     public BlockResponseDto createBlock(Member blockerMember, Long blockedMemberId) {

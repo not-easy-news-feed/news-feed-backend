@@ -40,6 +40,15 @@ public class PostController {
         PostResponseDto responseDto = postService.updatePost(postId, requestDto, member);
         return ResponseEntity.ok(responseDto);
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId,
+                                             HttpServletRequest request) {
+
+        Member member = (Member) request.getAttribute("member");
+        postService.deletePost(postId, member);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("게시물이 성공적으로 삭제되었습니다.");
+    }
 }
-
-

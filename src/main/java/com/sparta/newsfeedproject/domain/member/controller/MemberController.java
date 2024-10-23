@@ -49,13 +49,20 @@ public class MemberController {
         return new ResponseEntity<>(member.get(), HttpStatus.OK);
     }
 
-    //회원탈퇴
+
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<String> deleteMember(@PathVariable Long memberId, @RequestBody DeleteRequestDto requestDto) {
-        memberService.deleteMember(memberId, requestDto);
-        return ResponseEntity.ok("회원탈퇴 완료");
+    public ResponseEntity<String> deleteMember(@PathVariable Long memberId,
+                                               @RequestBody DeleteRequestDto requestDto,
+                                               HttpServletRequest request
+    ) {
+        Member member = (Member) request.getAttribute("member");
+        memberService.deleteMember(memberId, requestDto, member);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
+
+
 
 }
 

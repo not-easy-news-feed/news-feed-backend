@@ -11,6 +11,7 @@ import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -67,15 +68,15 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
     }
 
-    // 사용자 조회
+
     public Optional<Member> getMemberWithPosts(Long id) {
         return memberRepository.findById(id);
     }
 
-    // 회원탈퇴
-    public void deleteMember(Long memberId, DeleteRequestDto requestDto) {
 
-        // 사용자 존재 여부 확인
+    @Transactional
+    public void deleteMember(Long memberId, DeleteRequestDto requestDto,Member member) {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 

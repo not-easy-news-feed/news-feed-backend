@@ -25,16 +25,8 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.memberResponseDto = new MemberResponseDto(post.getMember());
-        this.createdAt = post.getCreatedAt();
-        this.updatedAt = post.getUpdatedAt();
-    }
+        this.commentResponseDtoList = post.getComments().stream().map(CommentResponseDto::new).toList();
 
-    public PostResponseDto(Post post, List<CommentResponseDto> comments) {
-        this.id = post.getId();
-        this.title = post.getTitle();
-        this.content = post.getContent();
-        this.commentResponseDtoList = comments;
         this.memberResponseDto = new MemberResponseDto(post.getMember());
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();

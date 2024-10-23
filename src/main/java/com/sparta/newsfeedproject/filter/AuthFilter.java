@@ -7,7 +7,6 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,7 +14,6 @@ import java.io.IOException;
 
 @Slf4j(topic = "AuthFilter")
 @Component
-@Order(2)
 public class AuthFilter implements Filter {
 
     private final MemberRepository memberRepository;
@@ -32,7 +30,7 @@ public class AuthFilter implements Filter {
         String url = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(url) &&
-                (url.startsWith("/api/members/login") || url.startsWith("/api/members"))
+                (url.startsWith("/api/members/login") || url.startsWith("/api/members/signup"))
         ) {
             log.info("인증 처리를 하지 않은 URL :{}", url);
             // 회원가입, 로그인 관련 API 는 인증 필요없이 요청 진행

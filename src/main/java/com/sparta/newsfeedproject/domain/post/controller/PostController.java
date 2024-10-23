@@ -33,6 +33,29 @@ public class PostController {
                 .body(responseDto);
     }
 
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostResponseDto> updatePost(
+            @PathVariable Long postId,
+            @RequestBody @Valid PostRequestDto requestDto,
+            HttpServletRequest request) {
+
+        Member member = (Member) request.getAttribute("member");
+
+        PostResponseDto responseDto = postService.updatePost(postId, requestDto, member);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId,
+                                             HttpServletRequest request) {
+
+        Member member = (Member) request.getAttribute("member");
+        postService.deletePost(postId, member);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("게시물이 성공적으로 삭제되었습니다.");
+    }
+
     @GetMapping
     public ResponseEntity<Page<PostResponseDto>> getPosts(
             @RequestParam(defaultValue = "1") int page,
@@ -41,8 +64,8 @@ public class PostController {
         Member member = (Member) request.getAttribute("member");
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<PostResponseDto> posts = postService.getPosts(pageable, member);
+        Page<PostResponseDto> postsResponseDto = postService.getPosts(pageable, member);
 
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
     }
 }

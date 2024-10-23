@@ -2,15 +2,19 @@ package com.sparta.newsfeedproject.domain.member.controller;
 
 import com.sparta.newsfeedproject.domain.member.dto.*;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
+import com.sparta.newsfeedproject.domain.member.dto.DeleteRequestDto;
+import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
@@ -23,6 +27,14 @@ public class MemberController {
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
         memberService.signup(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable Long memberId,
+                                               @RequestBody DeleteRequestDto requestDto,
+                                               HttpServletRequest request
+    ) {
+        Member member = (Member) request.getAttribute("member");
+        memberService.deleteMember(memberId, requestDto, member);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("회원탈퇴 완료");
     }
 
     //로그인
@@ -31,6 +43,7 @@ public class MemberController {
         memberService.login(requestDto, response);
         return ResponseEntity.ok("로그인 성공");
     }
+}
 
     @PostMapping("/follow")
     public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
@@ -64,3 +77,4 @@ public class MemberController {
                 .body("차단 해제 성공");
     }
 }
+

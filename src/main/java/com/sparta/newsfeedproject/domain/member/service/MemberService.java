@@ -8,32 +8,32 @@ import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Block;
 import com.sparta.newsfeedproject.domain.member.entity.Follow;
+import com.sparta.newsfeedproject.domain.member.dto.DeleteRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.entity.UserRoleEnum;
 import com.sparta.newsfeedproject.domain.member.repository.BlockRepository;
 import com.sparta.newsfeedproject.domain.member.repository.FollowRepository;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final BlockRepository blockRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC"; //ADMIN_TOKEN
 
-    public void signup(SignupRequestDto requestDto) {
-        String name = requestDto.getName();
-        String password = passwordEncoder.encode(requestDto.getPassword());
+
 
         String email = requestDto.getEmail();
         Optional<Member> checkEmail = memberRepository.findByEmail(email);
@@ -54,18 +54,33 @@ public class MemberService {
     }
 
     public void login(LoginRequestDto requestDto, HttpServletResponse response) {
+    @Transactional
+    public void deleteMember(Long memberId, DeleteRequestDto requestDto,Member member) {
+
+        Member deletedMember = memberRepository.findById(memberId).orElseThrow(()
+                -> new NoSuchElementException("등록된 사용자가 없습니다."));
+
+        if(!memberId.equals(member.getId())) throw new SecurityException("삭제할 권한이 없습니다.");
+
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다."));
+        if (!email.equals(deletedMember.getEmail())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password, deletedMember.getPassword())) throw new IllegalArgumentException("입력값이 일치하지 않습니다.");
 
         if(!passwordEncoder.matches(password, member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        // 사용자 삭제
+        memberRepository.delete(deletedMember);
+    }
+}
 
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());
         jwtUtil.addJwtToCookie(token, response);
     }
+
 
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
         Member followed = memberRepository.findById(followedMemberId)

@@ -64,7 +64,7 @@ public class PostController {
         Member member = (Member) request.getAttribute("member");
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<PostResponseDto> postsResponseDto = postService.getPosts(pageable, member);
+        Page<PostResponseDto> postsResponseDto = postService.getPosts(pageable);
 
         return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
     }

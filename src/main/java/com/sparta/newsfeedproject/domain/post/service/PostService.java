@@ -51,7 +51,7 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    public Page<PostResponseDto> getPosts(Pageable pageable, Member member) {
+    public Page<PostResponseDto> getPosts(Pageable pageable) {
 
         return postRepository.findAll(pageable).map(PostResponseDto::new);
     }

@@ -34,7 +34,7 @@ public class MemberController {
     }
     // 프로필 수정
     @PutMapping("/{memberId}")
-    public ResponseEntity<?> updateMember(@PathVariable Long memberId, @RequestBody UpdateRequestDto requestDto, HttpServletRequest request) {
+    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long memberId, @RequestBody UpdateRequestDto requestDto, HttpServletRequest request) {
 
         Member member = (Member) request.getAttribute("member");
 
@@ -47,14 +47,9 @@ public class MemberController {
 
     @GetMapping("/{memberId}")
     public ResponseEntity<?> getMember(@PathVariable Long memberId) {
-        Optional<Member> member = memberService.getMemberWithPosts(memberId);
+        Member member = memberService.getMemberWithPosts(memberId);
 
-        // 프로필이 존재하지 않는 경우 404
-        if (member.isEmpty()) {
-            return new ResponseEntity<>("Member not found", HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(member.get(), HttpStatus.OK);
+        return new ResponseEntity<>(new MemberResponseDto(member), HttpStatus.OK);
     }
 
     @DeleteMapping("/{memberId}")

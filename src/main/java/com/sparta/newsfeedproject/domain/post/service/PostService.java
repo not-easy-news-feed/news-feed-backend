@@ -48,8 +48,4 @@ public class PostService {
 
         postRepository.deleteById(postId);
     }
-
-    public Optional<Post> findPostById(Long postId) {
-        return postRepository.findById(postId);
-    }
 }

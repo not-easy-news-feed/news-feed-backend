@@ -54,7 +54,8 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public PostCommentsResponseDto getComments(Post post) {
+    public PostCommentsResponseDto getComments(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         List<Comment> comments = commentRepository.findAllByPost(post);
         //댓글을 DTO 로 변환
         List<CommentResponseDto> commentResponseDtoList = comments.stream().map(CommentResponseDto::new).toList();

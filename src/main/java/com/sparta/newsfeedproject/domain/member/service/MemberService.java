@@ -21,7 +21,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final BlockRepository blockRepository;
@@ -52,12 +51,12 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-
     public void login(LoginRequestDto requestDto, HttpServletResponse response) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다."));
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
         if(!passwordEncoder.matches(password, member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -66,64 +65,80 @@ public class MemberService {
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());
         jwtUtil.addJwtToCookie(token, response);
     }
-    public Member getMemberWithPosts(Long id) {
+
+    public Member getMemberById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(()-> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
     }
 
     @Transactional
     public void deleteMember(Long memberId, DeleteRequestDto requestDto,Member member) {
+        Member deletedMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다."));
 
-        Member deletedMember = memberRepository.findById(memberId).orElseThrow(()
-                -> new NoSuchElementException("등록된 사용자가 없습니다."));
-
-        if(!memberId.equals(member.getId())) throw new SecurityException("삭제할 권한이 없습니다.");
+        if(!memberId.equals(member.getId())) {
+            throw new SecurityException("삭제할 권한이 없습니다.");
+        }
 
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
-        if (!email.equals(deletedMember.getEmail())) throw new IllegalArgumentException("이메일이 일치하지 않습니다.");
-        if (!passwordEncoder.matches(password, deletedMember.getPassword())) throw new IllegalArgumentException("비밀번호 일치하지 않습니다.");
+        if (!email.equals(deletedMember.getEmail())) {
+            throw new IllegalArgumentException("이메일이 일치하지 않습니다.");
+        }
+        if (!passwordEncoder.matches(password, deletedMember.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
 
         // 사용자 삭제
         memberRepository.delete(deletedMember);
     }
 
     @Transactional
-    public MemberResponseDto updateMember(Long memberId, UpdateRequestDto requestDto, Member member) {
+    public MemberWithPostsResponseDto updateMember(Long memberId, UpdateRequestDto requestDto, Member member) {
+        Member updatedMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다."));
 
-        Member updatedMember = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("등록된 사용자가 없습니다."));
-
-        if (!memberId.equals(member.getId())) throw new SecurityException("수정할 권한이 없습니다.");
-        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
-        if (requestDto.getUpdatedPassword().equals(requestDto.getPassword())) throw new IllegalArgumentException("현재 비밀번호와 동일합니다.");
+        if(!memberId.equals(member.getId())) {
+            throw new SecurityException("수정할 권한이 없습니다.");
+        }
+        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        if(requestDto.getUpdatedPassword().equals(requestDto.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호와 동일한 비밀번호로 수정할 수 없습니다.");
+        }
 
         String password = passwordEncoder.encode(requestDto.getUpdatedPassword());
         updatedMember.update(requestDto.getUpdatedName(), password);
         memberRepository.saveAndFlush(updatedMember);
-        return new MemberResponseDto(updatedMember);
+        return new MemberWithPostsResponseDto(updatedMember);
     }
 
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
         Member followed = memberRepository.findById(followedMemberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+
         Optional<Follow> followCheck = followRepository.findByFollowerMemberIdAndFollowedMemberId(follower.getId(), followedMemberId);
-        if(followCheck.isPresent())
+        if(followCheck.isPresent()) {
             throw new RuntimeException("이미 팔로우 중인 유저입니다.");
+        }
         Follow follow = new Follow(follower, followed);
         return new FollowResponseDto(followRepository.save(follow));
     }
 
     public void deleteFollow(Member follower, Long followedMemberId) {
         memberRepository.findById(followedMemberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
         Follow follow = followRepository.findByFollowerMemberIdAndFollowedMemberId(follower.getId(), followedMemberId)
                 .orElseThrow(() -> new NoSuchElementException("팔로우 중인 유저가 아닙니다."));
         followRepository.delete(follow);
     }
 
     public BlockResponseDto createBlock(Member blockerMember, Long blockedMemberId) {
-        Member blockedMember = memberRepository.findById(blockedMemberId).orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+        Member blockedMember = memberRepository.findById(blockedMemberId)
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+
         Optional<Block> blockCheck = blockRepository.findByBlockerMemberIdAndBlockedMemberId(blockerMember.getId(), blockedMemberId);
         if(blockCheck.isPresent()) throw new RuntimeException("이미 차단 중인 유저입니다.");
 
@@ -133,10 +148,9 @@ public class MemberService {
 
     public void deleteBlock(Member blocker, Long blockedMemberId) {
         memberRepository.findById(blockedMemberId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 유저가 존재하지 않습니다."));
         Block block = blockRepository.findByBlockerMemberIdAndBlockedMemberId(blocker.getId(), blockedMemberId)
                 .orElseThrow(() -> new NoSuchElementException("차단 중인 유저가 아닙니다."));
         blockRepository.delete(block);
     }
 }
-

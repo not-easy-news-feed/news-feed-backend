@@ -10,46 +10,50 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
-
     private final MemberService memberService;
 
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
         memberService.signup(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("회원가입 완료");
     }
 
     //로그인
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
         memberService.login(requestDto, response);
-        return ResponseEntity.ok("로그인 성공");
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body("로그인 성공");
     }
     // 프로필 수정
     @PutMapping("/{memberId}")
-    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long memberId, @RequestBody UpdateRequestDto requestDto, HttpServletRequest request) {
-
+    public ResponseEntity<MemberWithPostsResponseDto> updateMember(
+            @PathVariable Long memberId,
+            @RequestBody UpdateRequestDto requestDto,
+            HttpServletRequest request
+    ) {
         Member member = (Member) request.getAttribute("member");
-
-        MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto, member);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-
-
+        MemberWithPostsResponseDto responseDto = memberService.updateMember(memberId, requestDto, member);
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(responseDto);
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<?> getMember(@PathVariable Long memberId) {
-        Member member = memberService.getMemberWithPosts(memberId);
-
-        return new ResponseEntity<>(new MemberResponseDto(member), HttpStatus.OK);
+    public ResponseEntity<MemberWithPostsResponseDto> getMemberWithPosts(@PathVariable Long memberId) {
+        Member member = memberService.getMemberById(memberId);
+        MemberWithPostsResponseDto responseDto = new MemberWithPostsResponseDto(member);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseDto);
     }
 
     @DeleteMapping("/{memberId}")
@@ -59,16 +63,19 @@ public class MemberController {
     ) {
         Member member = (Member) request.getAttribute("member");
         memberService.deleteMember(memberId, requestDto, member);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("회원탈퇴 완료");
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("회원탈퇴 완료");
     }
 
 
     @PostMapping("/follow")
-    public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest
-                                                                  servletRequest, @RequestBody FollowRequestDto requestDto) {
+    public ResponseEntity<FollowResponseDto> createFollow(HttpServletRequest servletRequest, @RequestBody FollowRequestDto requestDto) {
         Member member = (Member) servletRequest.getAttribute("member");
         FollowResponseDto responseDto = memberService.createFollow(member, requestDto.getFollowedMemberId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseDto);
     }
 
     @DeleteMapping("/follow")
@@ -84,7 +91,9 @@ public class MemberController {
     public ResponseEntity<BlockResponseDto> createBlock(HttpServletRequest request, @RequestBody BlockRequestDto requestDto) {
         Member member = (Member) request.getAttribute("member");
         BlockResponseDto responseDto = memberService.createBlock(member, requestDto.getBlockedMemberId());
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseDto);
     }
 
     @DeleteMapping("/block")
@@ -96,4 +105,3 @@ public class MemberController {
                 .body("차단 해제 성공");
     }
 }
-

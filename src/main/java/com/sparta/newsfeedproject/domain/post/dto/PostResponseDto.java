@@ -17,8 +17,7 @@ public class PostResponseDto {
     private String title;
     private String content;
     private List<CommentResponseDto> comments;
-//    private Member member;
-    private MemberResponseDto member; // 임시로 dto를 받아 사용
+    private MemberResponseDto member;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -26,7 +25,6 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        //        this.member = post.getMember();
         this.member = new MemberResponseDto(post.getMember());
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();

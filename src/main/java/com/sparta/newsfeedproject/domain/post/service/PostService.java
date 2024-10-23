@@ -1,6 +1,5 @@
 package com.sparta.newsfeedproject.domain.post.service;
 
-import com.sparta.newsfeedproject.domain.comment.repository.CommentRepository;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;

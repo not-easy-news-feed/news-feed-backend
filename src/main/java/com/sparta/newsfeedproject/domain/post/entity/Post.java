@@ -5,6 +5,7 @@ import com.sparta.newsfeedproject.domain.common.TimeStamped;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.post.dto.PostRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,5 +40,10 @@ public class Post extends TimeStamped {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.member = member;
+    }
+
+    public void updateData(@Valid PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
     }
 }

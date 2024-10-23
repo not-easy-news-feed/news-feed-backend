@@ -6,9 +6,7 @@ import com.sparta.newsfeedproject.domain.comment.service.CommentService;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +28,7 @@ public class CommentController {
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto,
             HttpServletRequest request //Spring Security+JWT 인증 이후에 @AuthenticationPrincipal UserDetailsImpl 로 파라미터를 받는부분 필요
-            ) {
+    ) {
         // Member 객체 조회
         Member member = (Member) request.getAttribute("member");
         CommentResponseDto responseDto = commentService.createComment(postId, requestDto, member);
@@ -50,7 +48,7 @@ public class CommentController {
             log.info("유효하지 않은 사용자 입니다.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        CommentResponseDto responseDto = commentService.updateComment(postId,commentId,requestDto,member);
+        CommentResponseDto responseDto = commentService.updateComment(postId, commentId, requestDto, member);
         return ResponseEntity.ok(responseDto);
     }
 }

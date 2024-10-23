@@ -40,27 +40,25 @@ public class AuthFilter implements Filter {
             // 토큰 확인
             String tokenValue = jwtUtil.getTokenFromRequest(httpServletRequest);
 
-            if (StringUtils.hasText(tokenValue)) { // 토큰이 존재하면 검증 시작
-                // JWT 토큰 substring
-                String token = jwtUtil.substringToken(tokenValue);
+            if (!StringUtils.hasText(tokenValue)) throw new IllegalArgumentException("Not Found Token");
+            // 토큰이 존재하면 검증 시작
+            // JWT 토큰 substring
+            String token = jwtUtil.substringToken(tokenValue);
 
-                // 토큰 검증
-                if (!jwtUtil.validateToken(token)) {
-                    throw new IllegalArgumentException("Token Error");
-                }
-
-                // 토큰에서 사용자 정보 가져오기
-                Claims info = jwtUtil.getUserInfoFromToken(token);
-
-                Member member = memberRepository.findByEmail(info.getSubject()).orElseThrow(() ->
-                        new NullPointerException("Not Found User")
-                );
-
-                request.setAttribute("member", member);
-                chain.doFilter(request, response); // 다음 Filter 로 이동
-            } else {
-                throw new IllegalArgumentException("Not Found Token");
+            // 토큰 검증
+            if (!jwtUtil.validateToken(token)) {
+                throw new IllegalArgumentException("Token Error");
             }
+
+            // 토큰에서 사용자 정보 가져오기
+            Claims info = jwtUtil.getUserInfoFromToken(token);
+
+            Member member = memberRepository.findByEmail(info.getSubject()).orElseThrow(() ->
+                    new NullPointerException("Not Found User")
+            );
+
+            request.setAttribute("member", member);
+            chain.doFilter(request, response); // 다음 Filter 로 이동
         }
     }
 

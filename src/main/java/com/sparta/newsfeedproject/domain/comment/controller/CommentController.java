@@ -23,11 +23,12 @@ public class CommentController {
     private final JwtUtil jwtUtil;
     private final MemberService memberService;
 
+    //댓글 작성
     @PostMapping("/{postId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto,
-            HttpServletRequest request //Spring Security+JWT 인증 이후에 @AuthenticationPrincipal UserDetailsImpl 로 파라미터를 받는부분 필요
+            HttpServletRequest request
     ) {
         // Member 객체 조회
         Member member = (Member) request.getAttribute("member");
@@ -35,6 +36,7 @@ public class CommentController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
+    //댓글 수정
     @PutMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long postId,
@@ -44,11 +46,19 @@ public class CommentController {
     ) {
         // Member 객체 조회
         Member member = (Member) request.getAttribute("member");
-        if(member == null) {
-            log.info("유효하지 않은 사용자 입니다.");
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         CommentResponseDto responseDto = commentService.updateComment(postId, commentId, requestDto, member);
         return ResponseEntity.ok(responseDto);
+    }
+
+    //댓글 삭제
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            HttpServletRequest request
+    ) {
+        Member member = (Member) request.getAttribute("member");
+        commentService.deleteComment(postId, commentId, member);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

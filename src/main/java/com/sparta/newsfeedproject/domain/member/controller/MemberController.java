@@ -18,20 +18,6 @@ import java.util.Optional;
 public class MemberController {
     private final MemberService memberService;
 
-    //회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
-        memberService.signup(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
-    }
-
-    //로그인
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
-        memberService.login(requestDto, response);
-        return ResponseEntity.ok("로그인 성공");
-    }
-    // 프로필 조회
     @GetMapping("/{memberId}")
     public ResponseEntity<?> getMember(@PathVariable Long memberId) {
         Optional<Member> member = memberService.getMemberWithPosts(memberId);

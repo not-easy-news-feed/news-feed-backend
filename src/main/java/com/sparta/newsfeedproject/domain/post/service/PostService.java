@@ -62,12 +62,6 @@ public class PostService {
             throw new IllegalArgumentException("사용자가 인증되지 않았습니다.");
         }
 
-        return postRepository.findAll(pageable).map(post -> {
-            List<CommentResponseDto> comments = commentRepository.findByPostId(post.getId())
-                    .stream()
-                    .map(CommentResponseDto::new)
-                    .collect(Collectors.toList());
-            return new PostResponseDto(post, comments);
-        });
+        return postRepository.findAll(pageable).map(PostResponseDto::new);
     }
 }

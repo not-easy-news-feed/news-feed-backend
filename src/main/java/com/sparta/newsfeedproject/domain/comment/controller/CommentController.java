@@ -8,27 +8,23 @@ import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-@Slf4j
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final JwtUtil jwtUtil;
-    private final MemberService memberService;
+    private final PostService postService;
 
     //댓글 작성
     @PostMapping("/{postId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto,
-            HttpServletRequest request
+            HttpServletRequest request //Spring Security+JWT 인증 이후에 @AuthenticationPrincipal UserDetailsImpl 로 파라미터를 받는부분 필요
     ) {
         // Member 객체 조회
         Member member = (Member) request.getAttribute("member");
@@ -60,5 +56,12 @@ public class CommentController {
         Member member = (Member) request.getAttribute("member");
         commentService.deleteComment(postId, commentId, member);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{postId}/comments/all")
+    public ResponseEntity<PostCommentsResponseDto> getComments(@PathVariable Long postId) { //게시글의 댓글자체는 로그인 없어도 볼 수 있다.
+        Post post = postService.findPostById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        PostCommentsResponseDto responseDto = commentService.getComments(post);
+        return ResponseEntity.ok(responseDto);
     }
 }

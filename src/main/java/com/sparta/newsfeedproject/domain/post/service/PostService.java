@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -31,6 +33,11 @@ public class PostService {
         if (!post.getMember().getId().equals(member.getId())) {
             throw new IllegalArgumentException("작성자가 아닙니다. 게시물을 수정할 권한이 없습니다.");
         }
+
+    public Optional<Post> findPostById(Long postId) {
+        return postRepository.findById(postId);
+    }
+}
 
         post.updateData(requestDto);
         postRepository.saveAndFlush(post);

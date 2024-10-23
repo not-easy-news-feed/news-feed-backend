@@ -66,6 +66,9 @@ public class MemberService {
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());
         jwtUtil.addJwtToCookie(token, response);
     }
+    public Optional<Member> getMemberWithPosts(Long id) {
+        return memberRepository.findById(id);
+    }
 
     public FollowResponseDto createFollow(Member follower, Long followedMemberId) {
         Member followed = memberRepository.findById(followedMemberId)

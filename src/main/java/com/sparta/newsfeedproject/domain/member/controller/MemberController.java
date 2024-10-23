@@ -1,17 +1,14 @@
 package com.sparta.newsfeedproject.domain.member.controller;
 
-import com.sparta.newsfeedproject.domain.comment.dto.CommentRequestDto;
-import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
-import com.sparta.newsfeedproject.domain.member.dto.MemberResposeDto;
+import com.sparta.newsfeedproject.domain.member.dto.MemberResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.UpdateRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.service.MemberService;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -60,25 +57,12 @@ public class MemberController {
     @PutMapping("/{memberId}")
     public ResponseEntity<?> updateMember(@PathVariable Long memberId, @RequestBody UpdateRequestDto requestDto, HttpServletRequest request) {
 
-        //토큰 가져오기
-        String token = jwtUtil.getTokenFromRequest(request);
-        //자르기
-        String tokenValue = jwtUtil.substringToken(token);
-        //사용자 정보 추출
-        Claims claims = jwtUtil.getUserInfoFromToken(tokenValue);
-        String email = claims.getSubject();
-        // Member 객체 조회
-        Member member = memberService.findByEmail(email);
-        if (member == null) {
-            log.info("유효하지 않은 사용자 입니다.");
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
 
+        Member member = (Member) request.getAttribute("member");
 
-        Member responseDto = memberService.updateMember(memberId, requestDto, token);
+        MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto, member);
 
-        return ResponseEntity.ok(responseDto);
-
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 
 
     }

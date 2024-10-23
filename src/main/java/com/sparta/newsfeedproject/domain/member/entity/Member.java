@@ -63,9 +63,8 @@ public class Member extends TimeStamped {
         this.role = role;
     }
 
-    public void update(UpdateRequestDto requestDto) {
-        this.name = requestDto.getName();
-        this.email = requestDto.getEmail();
-        this.password = requestDto.getPassword();
+    public void update(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 }

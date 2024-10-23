@@ -1,22 +1,20 @@
 package com.sparta.newsfeedproject.domain.member.service;
 
 import com.sparta.newsfeedproject.config.PasswordEncoder;
-import com.sparta.newsfeedproject.domain.comment.dto.CommentResponseDto;
-import com.sparta.newsfeedproject.domain.comment.entity.Comment;
 import com.sparta.newsfeedproject.domain.jwt.JwtUtil;
 import com.sparta.newsfeedproject.domain.member.dto.LoginRequestDto;
+import com.sparta.newsfeedproject.domain.member.dto.MemberResponseDto;
 import com.sparta.newsfeedproject.domain.member.dto.SignupRequestDto;
 import com.sparta.newsfeedproject.domain.member.dto.UpdateRequestDto;
 import com.sparta.newsfeedproject.domain.member.entity.Member;
 import com.sparta.newsfeedproject.domain.member.entity.UserRoleEnum;
 import com.sparta.newsfeedproject.domain.member.repository.MemberRepository;
-import com.sparta.newsfeedproject.domain.post.entity.Post;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -68,39 +66,19 @@ public class MemberService {
     }
 
     @Transactional
-    // 프로필 수정
-    public Member updateMember(Long id, UpdateRequestDto requestDto, String token) {
-        // JWT 토큰이 유효한지 확인
-        if (!jwtUtil.validateToken(token)) {
-            throw new SecurityException("Invalid JWT token");
-        }
+    public MemberResponseDto updateMember(Long memberId, UpdateRequestDto requestDto, Member member) {
 
-        // JWT 토큰에서 사용자 이름 추출
-        String currentUsername = jwtUtil.getUsernameFromToken(token);
+        Member updatedMember = memberRepository.findById(memberId).orElseThrow(() -> new NoSuchElementException("등록된 사용자가 없습니다."));
 
-        // 기존 프로필 조회
-        Optional<Member> existingMember = memberRepository.findById(id);
-        if (existingMember.isEmpty()) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
-        }
+        if(!memberId.equals(member.getId())) throw new SecurityException("수정할 권한이 없습니다.");
 
-        Member member = existingMember.get();
-
-        // JWT에서 추출한 사용자와 수정하려는 프로필의 사용자 일치 여부 확인
-        if (!member.getName().equals(currentUsername)) {
-            throw new IllegalArgumentException("프로필을 수정할 권한이 없습니다.");
-        }
-
-
-        // 수정할 필드 업데이트
-        member.update(requestDto);
-
-        // 프로필 저장
-        return memberRepository.save(member);
+        String password = passwordEncoder.encode(requestDto.getPassword());
+        updatedMember.update(requestDto.getName(), password);
+        memberRepository.saveAndFlush(updatedMember);
+        return new MemberResponseDto(updatedMember);
     }
 
 
-    // 프로필 조회
     public Optional<Member> getMemberWithPosts(Long id) {
         return memberRepository.findById(id);
     }

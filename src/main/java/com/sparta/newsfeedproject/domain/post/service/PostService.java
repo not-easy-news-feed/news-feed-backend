@@ -6,10 +6,10 @@ import com.sparta.newsfeedproject.domain.post.dto.PostResponseDto;
 import com.sparta.newsfeedproject.domain.post.entity.Post;
 import com.sparta.newsfeedproject.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,12 @@ public class PostService {
     public PostResponseDto updatePost(Long postId, PostRequestDto requestDto, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다."));
+
         // 작성자 검증
         if (!post.getMember().getId().equals(member.getId())) {
             throw new IllegalArgumentException("작성자가 아닙니다. 게시물을 수정할 권한이 없습니다.");
         }
+
         post.updateData(requestDto);
         postRepository.saveAndFlush(post);
         return new PostResponseDto(post);
@@ -47,5 +49,10 @@ public class PostService {
         }
 
         postRepository.deleteById(postId);
+    }
+
+    public Page<PostResponseDto> getPosts(Pageable pageable, Member member) {
+
+        return postRepository.findAll(pageable).map(PostResponseDto::new);
     }
 }

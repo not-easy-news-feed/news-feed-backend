@@ -7,6 +7,10 @@ import com.sparta.newsfeedproject.domain.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +54,18 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body("게시물이 성공적으로 삭제되었습니다.");
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PostResponseDto>> getPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+        Member member = (Member) request.getAttribute("member");
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<PostResponseDto> postsResponseDto = postService.getPosts(pageable, member);
+
+        return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
     }
 }

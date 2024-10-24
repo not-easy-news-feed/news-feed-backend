@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -62,8 +65,6 @@ public class PostController {
     public ResponseEntity<Page<PostResponseDto>> getPosts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-            @RequestParam(defaultValue = "10") int size
-    ) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<PostResponseDto> postsResponseDto = postService.getPosts(pageable);
         return ResponseEntity

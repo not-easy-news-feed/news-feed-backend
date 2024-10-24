@@ -40,6 +40,7 @@ public class PostController {
             HttpServletRequest request
     ) {
         Member member = (Member) request.getAttribute("member");
+
         PostResponseDto responseDto = postService.updatePost(postId, requestDto, member);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -60,6 +61,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<Page<PostResponseDto>> getPosts(
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -78,6 +80,20 @@ public class PostController {
 
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<PostResponseDto> postsResponseDto = postService.getFriendPosts(member.getId(), pageable);
+
+        return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
+    }
+
+    // 기간별 게시물 조회
+    @GetMapping("/date-range")
+    public ResponseEntity<Page<PostResponseDto>> getPostsByDateRange(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        Page<PostResponseDto> postsResponseDto = postService.getPostsByDateRange(startDate, endDate, pageable);
 
         return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
     }

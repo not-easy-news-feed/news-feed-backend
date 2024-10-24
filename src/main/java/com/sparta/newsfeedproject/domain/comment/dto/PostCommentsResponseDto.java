@@ -8,15 +8,15 @@ import java.util.List;
 
 @Getter
 public class PostCommentsResponseDto {
-    private String author;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private List<CommentResponseDto> comments;
+    private final String author;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final List<CommentResponseDto> commentResponseDtoList;
 
-    public PostCommentsResponseDto(Post post, List<CommentResponseDto> comments) {
+    public PostCommentsResponseDto(Post post) {
         this.author = post.getMember().getName();
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
-        this.comments = comments;
+        this.commentResponseDtoList = post.getComments().stream().map(CommentResponseDto::new).toList();
     }
 }

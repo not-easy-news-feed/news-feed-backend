@@ -15,40 +15,39 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/posts/{postId}/comments")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
 
-    //댓글 작성
-    @PostMapping("/{postId}/comments")
+    @PostMapping
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto,
             HttpServletRequest request
     ) {
-        // Member 객체 조회
         Member member = (Member) request.getAttribute("member");
         CommentResponseDto responseDto = commentService.createComment(postId, requestDto, member);
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseDto);
     }
 
-    //댓글 수정
-    @PutMapping("/{postId}/comments/{commentId}")
+    @PutMapping("/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @RequestBody CommentRequestDto requestDto,
             HttpServletRequest request
     ) {
-        // Member 객체 조회
         Member member = (Member) request.getAttribute("member");
         CommentResponseDto responseDto = commentService.updateComment(postId, commentId, requestDto, member);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseDto);
     }
 
-    //댓글 삭제
-    @DeleteMapping("/{postId}/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<String> deleteComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
@@ -56,12 +55,14 @@ public class CommentController {
     ) {
         Member member = (Member) request.getAttribute("member");
         commentService.deleteComment(postId, commentId, member);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body("댓글이 성공적으로 삭제되었습니다.");
     }
 
-    //댓글 조회
-    @GetMapping("/{postId}/comments/all")
-    public ResponseEntity<PostCommentsResponseDto> getComments(@PathVariable Long postId) { //게시글의 댓글자체는 로그인 없어도 볼 수 있다.
+    @GetMapping("/all")
+    public ResponseEntity<PostCommentsResponseDto> getComments(@PathVariable Long postId) {
+        //게시글의 댓글은 로그인 없어도 볼 수 있다.
         PostCommentsResponseDto responseDto = commentService.getComments(postId);
         return ResponseEntity.ok(responseDto);
     }

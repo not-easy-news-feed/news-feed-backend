@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
 public class PostController {
-
     private final PostService postService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<PostResponseDto> createPost(
             @RequestBody @Valid PostRequestDto requestDto,
-            HttpServletRequest request) {
+            HttpServletRequest request
+    ) {
         Member member = (Member) request.getAttribute("member");
         PostResponseDto responseDto = postService.createPost(requestDto, member);
         return ResponseEntity
@@ -37,36 +37,36 @@ public class PostController {
     public ResponseEntity<PostResponseDto> updatePost(
             @PathVariable Long postId,
             @RequestBody @Valid PostRequestDto requestDto,
-            HttpServletRequest request) {
-
+            HttpServletRequest request
+    ) {
         Member member = (Member) request.getAttribute("member");
-
         PostResponseDto responseDto = postService.updatePost(postId, requestDto, member);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseDto);
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId,
-                                             HttpServletRequest request) {
-
+                                             HttpServletRequest request
+    ) {
         Member member = (Member) request.getAttribute("member");
         postService.deletePost(postId, member);
-
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
                 .body("게시물이 성공적으로 삭제되었습니다.");
     }
 
     @GetMapping
     public ResponseEntity<Page<PostResponseDto>> getPosts(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
-        Member member = (Member) request.getAttribute("member");
-
+            @RequestParam(defaultValue = "10") int size
+    ) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<PostResponseDto> postsResponseDto = postService.getPosts(pageable);
-
-        return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(postsResponseDto);
     }
 
     @GetMapping("/friend")

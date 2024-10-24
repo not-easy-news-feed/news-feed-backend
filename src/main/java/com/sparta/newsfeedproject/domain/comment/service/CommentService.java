@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,13 +22,10 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto createComment(Long postId, CommentRequestDto requestDto, Member member) {
-
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-
         Comment comment = new Comment(requestDto.getContent(), post, member);
-        commentRepository.save(comment); //생성 및 저장
-
+        commentRepository.save(comment);
         return new CommentResponseDto(comment);
     }
 
@@ -38,6 +35,9 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글에 댓글이 존재하지 않습니다."));
+        if(!post.getComments().contains(comment)) {
+            throw new NoSuchElementException("해당 게시글에 존재하는 댓글이 아닙니다.");
+        }
         if (!comment.getMember().getId().equals(member.getId())) {
             throw new SecurityException("본인의 댓글만 수정할 수 있습니다.");
         }
@@ -48,17 +48,22 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long postId, Long commentId, Member member) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
-        if(!comment.getMember().getId().equals(member.getId())) throw new SecurityException("본인의 댓글만 삭제할 수 있습니다.");
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+        if(!post.getComments().contains(comment)) {
+            throw new NoSuchElementException("해당 게시글에 존재하는 댓글이 아닙니다.");
+        }
+        if(!comment.getMember().getId().equals(member.getId())) {
+            throw new SecurityException("본인의 댓글만 삭제할 수 있습니다.");
+        }
         commentRepository.delete(comment);
     }
 
     public PostCommentsResponseDto getComments(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        List<Comment> comments = commentRepository.findAllByPost(post);
-        //댓글을 DTO 로 변환
-        List<CommentResponseDto> commentResponseDtoList = comments.stream().map(CommentResponseDto::new).toList();
-        return new PostCommentsResponseDto(post, commentResponseDtoList);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        return new PostCommentsResponseDto(post);
     }
 }

@@ -68,4 +68,17 @@ public class PostController {
 
         return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
     }
+
+    @GetMapping("/friend")
+    public ResponseEntity<Page<PostResponseDto>> getFriendPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+        Member member = (Member) request.getAttribute("member");
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<PostResponseDto> postsResponseDto = postService.getFriendPosts(member.getId(), pageable);
+
+        return new ResponseEntity<>(postsResponseDto, HttpStatus.OK);
+    }
 }
